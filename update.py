@@ -22,6 +22,8 @@ class UpdateHandler(webapp.RequestHandler):
             post.put()
             
             logging.info("Created new post: %s", post.key().id())
+        else:
+            logging.info("Fetch did not work")
 
     def fetch_burger(self):
         feed_string = ''
@@ -39,6 +41,6 @@ class UpdateHandler(webapp.RequestHandler):
 
             feed_string = burger.string + ' ' + burger_cont.string
         except urllib2.URLError, e:
-            logging.error(e.message)
+            logging.info(e.message)
         
         return feed_string

@@ -4,8 +4,8 @@ runtime: python
 api_version: 1
 
 handlers:
-# - url: /update/weekly
-#   script: update.py
-  # login: admin
+- url: /update
+  script: main.py
+  login: admin
 - url: .*
   script: main.py

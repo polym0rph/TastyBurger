@@ -1,0 +1,5 @@
+cron:
+- description: friday burger fetcher
+  url: /update
+  schedule: every friday 01:00
+  timezone: Europe/Berlin

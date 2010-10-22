@@ -24,7 +24,7 @@ from update import UpdateHandler
 def main():
     application = webapp.WSGIApplication(
         [('/feed', FeedHandler),
-        ('/update/weekly', UpdateHandler)],
+        ('/update', UpdateHandler)],
         debug=True)
     
     util.run_wsgi_app(application)
