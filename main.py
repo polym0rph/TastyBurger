@@ -26,6 +26,7 @@ def main():
         [('/feed', FeedHandler),
         ('/update/weekly', UpdateHandler)],
         debug=True)
+    
     util.run_wsgi_app(application)
 
 if __name__ == '__main__':
