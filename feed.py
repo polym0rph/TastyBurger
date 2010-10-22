@@ -41,6 +41,6 @@ class FeedHandler(webapp.RequestHandler):
             
             items = rss_items
         )        
-                
-        print 'Content-Type: text/xml'
-        print rss.to_xml()
+        
+        self.response.headers['Content-Type'] = 'application/rss+xml'
+        self.response.out.write(rss_xml)        

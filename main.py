@@ -21,10 +21,18 @@ from feed import FeedHandler
 from update import UpdateHandler
 
 
+class MainHandler(webapp.RequestHandler):
+    def get(self):
+        self.response.out.write("""Subscribe to the tasty burger
+            <a href="http://tasty-burger.appspot.com/feed">feed</a> or
+            follow on twitter """)
+        
+        
 def main():
     application = webapp.WSGIApplication(
-        [('/feed', FeedHandler),
-        ('/update', UpdateHandler)],
+        [('/', MainHandler),
+         ('/feed', FeedHandler),
+         ('/update', UpdateHandler)],
         debug=True)
     
     util.run_wsgi_app(application)
