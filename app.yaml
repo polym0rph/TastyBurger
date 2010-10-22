@@ -1,8 +1,11 @@
-application: TastyBurger
+application: tasty-burger
 version: 1
 runtime: python
 api_version: 1
 
 handlers:
+# - url: /update/weekly
+#   script: update.py
+  # login: admin
 - url: .*
   script: main.py
