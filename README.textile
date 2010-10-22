@@ -1,0 +1,5 @@
+This is very simple application which provides a friday burger feed for the <a href="http://www.tasty-babelsberg.de/">Bistro Tasty</a> in Potsdam, Germany.
+
+The project runs on the Google App Engine and demonstrates how to parse a website with a cron job and how to generate a rss feed.
+
+To subscribe use this <a href="http://tasty-burger.appspot.com/feed">url</a> or follow the <a href="">tasty burger friday</a> on twitter.

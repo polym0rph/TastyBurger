@@ -32,7 +32,7 @@ def main():
         [('/', MainHandler),
          ('/feed', FeedHandler),
          ('/update', UpdateHandler)],
-        debug=True)
+        debug=False)
     
     util.run_wsgi_app(application)
 
