@@ -24,7 +24,9 @@ from update import UpdateHandler
 class MainHandler(webapp.RequestHandler):
     def get(self):
         self.response.out.write("""Subscribe to the tasty burger
-            <a href="/feed">feed</a>""")
+            <a href="/feed">feed</a> or follow the
+            <a href="http://twitter.com/BurgerFriday">tasty burger friday</a>
+            on twitter.""")
         
         
 def main():
