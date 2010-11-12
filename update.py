@@ -1,5 +1,6 @@
 import logging
 import re
+import string
 import urllib2
 
 from google.appengine.ext import webapp
@@ -33,13 +34,18 @@ class UpdateHandler(webapp.RequestHandler):
             soup = BeautifulSoup(sock.read())
             sock.close()
 
-            burger = soup.find(name='span',    
-            text=re.compile('(B|b)urger\s+(?!(V|v)eggie)'))
-
+            burger = soup.find(name='span',
+                text=re.compile('Burger(\s|[%s])+(?!(V|v)eggie)' % 
+                    re.escape(string.punctuation)))
+            
             burger_cont_p = burger.parent.parent.nextSibling.nextSibling
             burger_cont = burger_cont_p.find('span')
-
-            feed_string = burger.string + ' ' + burger_cont.string
+            
+            if re.search('(B|b)r', burger_cont.string) == None:
+                feed_string = burger.string
+            else:
+                feed_string = burger.string + ' ' + burger_cont.string
+            
         except urllib2.URLError, e:
             logging.info(e.message)
         
