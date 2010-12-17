@@ -1,9 +1,9 @@
 import logging
 import re
 import string
-import urllib2
 
 from google.appengine.ext import webapp
+from google.appengine.api import urlfetch
 
 from vendor.BeautifulSoup import BeautifulSoup
 
@@ -28,25 +28,25 @@ class UpdateHandler(webapp.RequestHandler):
 
     def fetch_burger(self):
         feed_string = ''
-        
         try:
-            sock = urllib2.urlopen(URL)
-            soup = BeautifulSoup(sock.read())
-            sock.close()
+            result = urlfetch.fetch(URL)
+            if result.status_code == 200:
+                soup = BeautifulSoup(result.content)
 
-            burger = soup.find(name='span',
-                text=re.compile('Burger(\s|[%s])+(?!(V|v)eggie)' % 
-                    re.escape(string.punctuation)))
-            
-            burger_cont_p = burger.parent.parent.nextSibling.nextSibling
-            burger_cont = burger_cont_p.find('span')
-            
-            if re.search('(B|b)r', burger_cont.string) == None:
-                feed_string = burger.string
-            else:
-                feed_string = burger.string + ' ' + burger_cont.string
-            
-        except urllib2.URLError, e:
-            logging.info(e.message)
+                burger = soup.find(name='span',
+                    text=re.compile('Burger(\s|[%s])+(?!(V|v)eggie)' % 
+                        re.escape(string.punctuation)))
+
+                burger_cont_p = burger.parent.parent.nextSibling.nextSibling
+                burger_cont = burger_cont_p.find('span')
+
+                if re.search('(B|b)r', burger_cont.string) == None:
+                    feed_string = burger.string
+                else:
+                    feed_string = burger.string + ' ' + burger_cont.string
+        except Exception, e:
+            logging.error(e.message)
+        except:
+            logging.error("[ERROR] - fetch_burger()")
         
         return feed_string
