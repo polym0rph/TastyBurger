@@ -33,20 +33,35 @@ class UpdateHandler(webapp.RequestHandler):
             if result.status_code == 200:
                 soup = BeautifulSoup(result.content)
 
-                burger = soup.find(name='span',
-                    text=re.compile('Burger(\s|[%s])+(?!(V|v)eggie)' % 
-                        re.escape(string.punctuation)))
-
-                burger_cont_p = burger.parent.parent.nextSibling.nextSibling
-                burger_cont = burger_cont_p.find('span')
-
-                if re.search('(B|b)r', burger_cont.string) == None:
+                burgerArray = soup.findAll(name='span',
+                    text=re.compile('[^A-Za-z]burger', re.IGNORECASE))
+                
+                burger = None
+                
+                for item in burgerArray:
+                    if re.search(re.compile('veggie', re.IGNORECASE), item):
+                        logging.info("contains veggie")
+                    else:
+                        burger = item
+                
+                if burger == None:
+                    raise Exception
+                
+                try:
+                    burger_cont_p = burger.parent.parent.nextSibling.nextSibling
+                    burger_cont = burger_cont_p.find('span')
+                except:
+                    logging.info("[ERROR] - find burger_cont failed")
                     feed_string = burger.string
                 else:
-                    feed_string = burger.string + ' ' + burger_cont.string
+                    if re.search('(B|b)r', burger_cont.string) == None:
+                        feed_string = burger.string
+                    else:
+                        feed_string = burger.string + ' ' + burger_cont.string
+                        
         except Exception, e:
             logging.error(e.message)
         except:
-            logging.error("[ERROR] - fetch_burger()")
+            logging.error("fetch_burger() failed")
         
         return feed_string
