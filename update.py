@@ -1,6 +1,5 @@
 import logging
 import re
-import string
 
 from google.appengine.ext import webapp
 from google.appengine.api import urlfetch
@@ -10,58 +9,62 @@ from vendor.BeautifulSoup import BeautifulSoup
 from models.post import Post
 
 
-URL = "http://www.tasty-babelsberg.de/das-restaurant/wochenkarte/"
+TASTY_URL = 'http://www.tasty-babelsberg.de/das-restaurant/wochenkarte/'
 
 
 class UpdateHandler(webapp.RequestHandler):
     def get(self):
-        string = self.fetch_burger()
+        burger_string = self.fetch_burger_string()
         
-        if(string != ''):
-            
-            post = Post(content=string)
+        if(burger_string != ''):
+            post = Post(content=burger_string)
             post.put()
-            
-            logging.info("Created new post: %s", post.key().id())
+            logging.info("UpdateHandler::get() - Created new post with id: %s",
+                post.key().id())
         else:
-            logging.info("Fetch did not work")
+            logging.error('UpdateHandler::get() - fetch_burger_string()' + 
+                'returned an empty string, no post created')
 
-    def fetch_burger(self):
-        feed_string = ''
+    def fetch_burger_string(self):
+        """Fetch the html from the TASTY_URL and scrape it to extract the 
+        available burger for the current friday."""
+        
+        # return value
+        burger_string = ''
+        
         try:
-            result = urlfetch.fetch(URL)
-            if result.status_code == 200:
-                soup = BeautifulSoup(result.content)
-
-                burgerArray = soup.findAll(name='span',
+            # fetch html from the given url
+            url_fetch_response = urlfetch.fetch(TASTY_URL)
+            if url_fetch_response.status_code == 200:                
+                # parse html document
+                soup = BeautifulSoup(url_fetch_response.content)
+                
+                # find all elments with the text 'burger' in it
+                burgers = soup.findAll(
                     text=re.compile('[^A-Za-z]burger', re.IGNORECASE))
                 
-                burger = None
+                # find an element which does not contain 'veggie'
+                burger_element = None
+                for item in burgers:
+                    if re.search(r'veggie', item, re.IGNORECASE) == None:
+                        burger_element = item
+                # stop here if there is no valid element
+                if burger_element == None:
+                    raise Exception('Could not find a burger element')
                 
-                for item in burgerArray:
-                    if re.search(re.compile('veggie', re.IGNORECASE), item):
-                        logging.info("contains veggie")
-                    else:
-                        burger = item
+                # find the parent 'p' element
+                parent_p_burger_element = burger_element.findParent(name='p')
                 
-                if burger == None:
-                    raise Exception
+                # get all text without the html tags and set the burger_string
+                burger_string = ''.join(
+                    parent_p_burger_element.findAll(text=True))
                 
-                try:
-                    burger_cont_p = burger.parent.parent.nextSibling.nextSibling
-                    burger_cont = burger_cont_p.find('span')
-                except:
-                    logging.info("[ERROR] - find burger_cont failed")
-                    feed_string = burger.string
-                else:
-                    if re.search('(B|b)r', burger_cont.string) == None:
-                        feed_string = burger.string
-                    else:
-                        feed_string = burger.string + ' ' + burger_cont.string
-                        
+                # TODO: look at the next p element if there is a second half
+                
         except Exception, e:
-            logging.error(e.message)
+            logging.error('UpdateHandler::fetch_burger_string() - ' + str(e))
         except:
-            logging.error("fetch_burger() failed")
+            logging.error('UpdateHandler::fetch_burger_string() - ' +
+                'failed with an unknown exception')
         
-        return feed_string
+        return burger_string

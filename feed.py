@@ -14,7 +14,7 @@ class FeedHandler(webapp.RequestHandler):
         rss_items = []
         
         # fetch all posts from the db
-        logging.info("Fetching posts from the db")
+        logging.info("FeedHandler::get() - Fetching posts from the db")
         q = Post.all()
         results = q.fetch(30)
 
