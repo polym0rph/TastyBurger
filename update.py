@@ -55,9 +55,13 @@ class UpdateHandler(webapp.RequestHandler):
                 # find the parent 'p' element
                 parent_p_burger_element = burger_element.findParent(name='p')
                 
-                # get all text without the html tags and set the burger_string
-                burger_string = ''.join(
-                    parent_p_burger_element.findAll(text=True))
+                if(parent_p_burger_element):
+                    # get all text without the html tags and set the
+                    # burger_string
+                    burger_string = ''.join(
+                        parent_p_burger_element.findAll(text=True))
+                else:
+                    burger_string = burger_element
                 
                 # TODO: look at the next p element if there is a second half
                 
