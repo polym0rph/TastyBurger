@@ -16,7 +16,8 @@ class FeedHandler(webapp.RequestHandler):
         # fetch all posts from the db
         logging.info("FeedHandler::get() - Fetching posts from the db")
         q = Post.all()
-        results = q.fetch(30)
+        q.order("-created_at")
+        results = q.fetch(20)
 
         for p in results:
             rss_items.append(
