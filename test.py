@@ -14,13 +14,13 @@ print burgerArray
 
 burger_element = None
 for item in burgerArray:
-    if re.search(r'veggie', item, re.IGNORECASE) == None:
+    if re.search(r'veggie|neu', item, re.IGNORECASE) == None:
         burger_element = item
 
 if(burger_element):
     parent_burger_p = burger_element.findParent(name='p')
     if(parent_burger_p):
         string = ''.join(parent_burger_p.findAll(text=True))
-        print unicode(string)
+        print unicode(string.replace('\n', ' ').strip())
     else:
         print unicode(burger_element)
