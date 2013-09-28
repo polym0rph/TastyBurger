@@ -1,4 +1,4 @@
-application: tasty-burger
+application: tasty-burger-hrd
 version: 7
 runtime: python
 api_version: 1

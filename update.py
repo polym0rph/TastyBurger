@@ -9,7 +9,7 @@ from vendor.BeautifulSoup import BeautifulSoup
 from models.post import Post
 
 
-TASTY_URL = 'http://www.tasty-babelsberg.de/das-restaurant/wochenkarte/'
+TASTY_URL = 'http://www.tasty-babelsberg.de'
 
 
 class UpdateHandler(webapp.RequestHandler):

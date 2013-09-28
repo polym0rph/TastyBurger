@@ -4,7 +4,7 @@ import urllib
 from vendor.BeautifulSoup import BeautifulSoup
 
 
-URL = "http://www.tasty-babelsberg.de/das-restaurant/wochenkarte/"
+URL = "http://www.tasty-babelsberg.de"
 
 
 soup = BeautifulSoup(urllib.urlopen(URL))
